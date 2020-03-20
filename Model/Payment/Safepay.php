@@ -14,7 +14,7 @@ class Safepay extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_isInitializeNeeded      = true;
 	protected $_canUseInternal          = true;
 	protected $_canUseForMultishipping  = false;
-    protected $_infoBlockType = \Magento\Payment\Block\Info::class;
+    protected $_infoBlockType = \Safepay\Checkout\Block\Info::class;
 
     public function isAvailable(
         \Magento\Quote\Api\Data\CartInterface $quote = null

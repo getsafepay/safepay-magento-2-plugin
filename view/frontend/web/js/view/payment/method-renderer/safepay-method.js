@@ -52,7 +52,7 @@ define(
                             } else {
                                 alert({
                                     title: $.mage.__('Error'),
-                                    content: $.mage.__('Something went wrong. Please try again Test.'),
+                                    content: $.mage.__('Something went wrong. Please try again.'),
                                     actions: {
                                         always: function(){}
                                     }
@@ -73,7 +73,7 @@ define(
                     error: function (jqXhr, textStatus, errorMessage) {
                         alert({
                             title: $.mage.__('Error'),
-                            content: $.mage.__('Something went wrong. Please try again Test.'),
+                            content: $.mage.__('Something went wrong. Please try again.'),
                             actions: {
                                 always: function(){}
                             }
@@ -83,8 +83,24 @@ define(
                 });
             },
 
+            /**
+             * Get payment method data
+             */
+            getData: function () {
+                var apiResponse = tokenApiResponse();
+                console.log(apiResponse, typeof apiResponse.data, apiResponse.data);
+                
+                return {
+                    'method': this.item.method,
+                    'po_number': null,
+                    'additional_data': {
+                        'safepay_token_data': (typeof apiResponse.token !== 'undefined' && apiResponse.token != null) ? JSON.stringify(apiResponse) : null
+                    }
+                };
+            },
+
             afterPlaceOrder: function () {
-                redirectOnSuccessAction.redirectUrl = url.build('test/test/test');
+                redirectOnSuccessAction.redirectUrl = url.build('safepay/payment/process');
                 this.redirectAfterPlaceOrder = true;
             },
         });
