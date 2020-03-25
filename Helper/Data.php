@@ -12,6 +12,10 @@ use \Magento\Framework\UrlInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Safepay\Checkout\Model\EnvVars;
 use Magento\Sales\Model\OrderFactory;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Service\InvoiceService;
+use Magento\Framework\DB\Transaction;
+use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 
 class Data extends CoreHelper
 {
@@ -21,6 +25,9 @@ class Data extends CoreHelper
 
     protected $_orderManagement;
     protected $_orderFactory;
+    protected $_orderRepository;
+    protected $_invoiceService;
+    protected $_invoiceSender;
 
     /**
      * Data constructor.
@@ -38,12 +45,20 @@ class Data extends CoreHelper
         ScopeConfigInterface $scopeConfig,
         OrderManagementInterface $orderManagement,
         OrderFactory $orderFactory,
-        UrlInterface $urlInterface
+        UrlInterface $urlInterface,
+        OrderRepositoryInterface $orderRepository,
+        InvoiceService $invoiceService,
+        Transaction $transaction,
+        InvoiceSender $invoiceSender
     ) {
         $this->_scopeConfig = $scopeConfig;
         $this->_orderManagement = $orderManagement;
         $this->_orderFactory = $orderFactory;
         $this->_urlInterface = $urlInterface;
+        $this->_orderRepository = $orderRepository;
+        $this->_invoiceService = $invoiceService;
+        $this->_transaction = $transaction;
+        $this->_invoiceSender = $invoiceSender;
         parent::__construct($context, $objectManager, $storeManager);
     }
 
@@ -71,7 +86,11 @@ class Data extends CoreHelper
     public function getUrl($urlKey = null, $paramArray = [])
     {
         if (!empty($urlKey)) {
-            return $this->_urlInterface->getUrl($urlKey, $paramArray);
+            if (empty($paramArray)) {
+                return $this->_urlInterface->getUrl($urlKey);
+            } else {
+                return $this->_urlInterface->getUrl($urlKey, $paramArray);
+            }
         } else {
             return $this->_urlInterface->getBaseUrl();
         }
@@ -84,7 +103,7 @@ class Data extends CoreHelper
         $params = array(
             "env"            => $this->getStoreConfigValue('sandbox') ? self::SANDBOX : self::PRODUCTION,
             "beacon"         => $tracker,
-            "source"         => 'magento',
+            "source"         => 'magento2',
             "order_id"       => $order_id,
             "nonce"          => 'magento_order_id'. $order_id,
             "redirect_url"   => $this->getUrl('safepay/payment/response'),
@@ -118,5 +137,28 @@ class Data extends CoreHelper
         }
 
         return false;
+    }
+    public function createInvoice($orderId)
+    {
+        $order = $this->_orderRepository->get($orderId);
+        if($order->canInvoice()) {
+            $invoice = $this->_invoiceService->prepareInvoice($order);
+            $invoice->register();
+            $invoice->getOrder()->setIsInProcess(true);
+            $invoice->save();
+            $transactionSave = $this->_transaction->addObject(
+                $invoice
+            )->addObject(
+                $invoice->getOrder()
+            );
+            $transactionSave->save();
+            $this->_invoiceSender->send($invoice);
+            //send notification code
+            $order->addStatusHistoryComment(
+                __('Notified customer about invoice #%1.', $invoice->getId())
+            )
+            ->setIsCustomerNotified(true)
+            ->save();
+        }
     }
 }

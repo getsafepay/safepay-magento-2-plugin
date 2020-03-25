@@ -12,9 +12,9 @@ class Response extends Base
     public function execute()
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        if (!empty($this->getRequest()->getPostValue())) {
+        if (!empty($this->getRequest()->getParams())) {
             try {
-                $postData = $this->getRequest()->getPostValue();
+                $postData = $this->getRequest()->getParams();
                 $order_id = $postData['order_id']; // Generally sent by gateway
                 $signature = ($postData["sig"]);
                 $reference_code = ($postData["reference"]);
@@ -41,6 +41,7 @@ class Response extends Base
                     // Payment was successful, so update the order's state, send order email and move to the success page
                     $order->setState(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
                     $order->setStatus(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
+                    $this->_safepayHelper->createInvoice($order_id);
                     $order->addStatusHistoryComment(__('Payment Gateway Reference %s and tracker id %s',$reference_code,$tracker));
 
                     // $order->sendNewOrderEmail();
@@ -54,9 +55,7 @@ class Response extends Base
                     $payment->setAdditionalInformation('safepay_tracker', $postData['tracker']);
                     $payment->setAdditionalInformation('safepay_token_data', $postData['token']);
                     $payment->save();
-        
-                    $this->_checkoutSession->unsQuoteId();
-
+                    
                     $resultRedirect->setUrl($this->_safepayHelper->getUrl('checkout/onepage/success', ['_secure'=>true]));
                     return $resultRedirect;
                 } else {
@@ -66,7 +65,6 @@ class Response extends Base
                     return $resultRedirect;
                 }
             } catch (\Exception $e) {
-                print_r($e->getMessage());
                 $this->_messageManager->addErrorMessage(__('Error occured while processing the payment: %1', $e->getMessage()));
                 $resultRedirect->setUrl($this->_safepayHelper->getUrl('checkout/onepage/failure', ['_secure'=>true]));
                 return $resultRedirect;

@@ -16,7 +16,7 @@ class CsrfValidatorSkip
         $action
     ) {
         if ($request->getModuleName() == 'safepay') {
-            return; // Skip CSRF check
+            return true; // Skip CSRF check
         }
         $proceed($request, $action); // Proceed Magento 2 core functionalities
     }
