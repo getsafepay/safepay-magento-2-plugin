@@ -7,10 +7,6 @@
 				<model>Safepay\Checkout\Model\Payment\Safepay</model>
 				<title>Safepay</title>
 				<sandbox>0</sandbox>
-				<sandbox_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-				<sandbox_webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-				<production_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
-				<production_webhook_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
 				<allowspecific>0</allowspecific>
 				<sort_order>10</sort_order>
 				<group>offline</group>

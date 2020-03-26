@@ -21,31 +21,27 @@
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[Select <strong>Yes</strong> to run test transactions in sandbox mode.]]></comment>
 				</field>
-				<field id="sandbox_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="50" translate="label" type="obscure">
+				<field id="sandbox_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="50" translate="label" type="text">
 					<label>Sandbox key</label>
-					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<depends>
                         <field id="*/*/sandbox">1</field>
                     </depends>
 				</field>
-				<field id="sandbox_webhook_secret" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="60" translate="label" type="obscure">
+				<field id="sandbox_webhook_secret" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="60" translate="label" type="text">
 					<label>Sandbox Shared Secret</label>
-					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<depends>
                         <field id="*/*/sandbox">1</field>
                     </depends>
 					<comment><![CDATA[Using webhook secret keys allows Safepay to verify each payment. To get your sandbox webhook key: <br/>&nbsp;&nbsp; 1. Navigate to your Sandbox Safepay dashboard by clicking <a target="__blank" href="https://sandbox.api.getsafepay.com/dashboard/api-settings">here</a> <br/>&nbsp;&nbsp; 2. Activate your Developer settings, copy the webhook secret key and paste into the box above.]]></comment>
 				</field>
-				<field id="production_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="70" translate="label" type="obscure">
+				<field id="production_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="70" translate="label" type="text">
 					<label>Production key</label>
-					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<depends>
                         <field id="*/*/sandbox">0</field>
                     </depends>
 				</field>
-				<field id="production_webhook_secret" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="80" translate="label" type="obscure">
+				<field id="production_webhook_secret" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="80" translate="label" type="text">
 					<label>Production Shared Secret</label>
-					<backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
 					<depends>
                         <field id="*/*/sandbox">0</field>
                     </depends>
