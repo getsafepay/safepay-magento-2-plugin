@@ -1,0 +1,25 @@
+{
+    "name": "safepay/module-checkout",
+    "description": "",
+    "type": "magento2-module",
+    "version": "dev-master",
+    "license": [
+        "OSL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "Team Safepay",
+            "email": "support@getsafepay.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Safepay\\Checkout\\": ""
+        }
+    }
+}
