@@ -4,7 +4,6 @@ namespace Safepay\Checkout\Controller\Payment;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Safepay\Checkout\Helper\Data as SafepayHelper;
@@ -30,7 +29,6 @@ abstract class Base extends \Magento\Framework\App\Action\Action
         \Psr\Log\LoggerInterface $logger,
         Session $checkoutSession,
         StoreManagerInterface $storeManager,
-        ResultFactory $resultFactory,
         ScopeConfigInterface $scopeConfig,
         JsonHelper $jsonHelper,
         SafepayHelper $safepayHelper,
@@ -40,7 +38,7 @@ abstract class Base extends \Magento\Framework\App\Action\Action
         $this->_logger = $logger;
         $this->_checkoutSession = $checkoutSession;
         $this->_storeManager = $storeManager;
-        $this->_resultFactory = $resultFactory;
+        $this->_resultFactory = $context->getResultFactory();
         $this->_scopeConfig = $scopeConfig;
         $this->_jsonHelper = $jsonHelper;
         $this->_safepayHelper = $safepayHelper;
