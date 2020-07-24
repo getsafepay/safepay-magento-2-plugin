@@ -9,6 +9,7 @@
 				<sandbox>0</sandbox>
 				<allowspecific>0</allowspecific>
 				<sort_order>10</sort_order>
+				<order_status>pending_payment</order_status>
 				<group>offline</group>
 			</safepay>
 		</payment>
