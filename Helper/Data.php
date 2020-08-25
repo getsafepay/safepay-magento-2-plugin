@@ -3,7 +3,7 @@
 namespace Safepay\Checkout\Helper;
 
 use Exception;
-use Mageplaza\Core\Helper\AbstractData as CoreHelper;
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -17,7 +17,7 @@ use Magento\Sales\Model\Service\InvoiceService;
 use Magento\Framework\DB\Transaction;
 use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
 
-class Data extends CoreHelper
+class Data extends AbstractHelper
 {
     const STORE_SCOPE = \Magento\Store\Model\ScopeInterface::SCOPE_STORES;
     const SANDBOX = EnvVars::SANDBOX;
@@ -70,14 +70,14 @@ class Data extends CoreHelper
     public function getStoreConfigValue($fieldId)
     {
         return $this->_scopeConfig->getValue(
-                    "payment/safepay/".$fieldId, 
+                    "payment/safepay/".$fieldId,
                     self::STORE_SCOPE
                 );
     }
 
     /**
      * int $orderId
-     * Order cancel by order id $orderId 
+     * Order cancel by order id $orderId
      */
     public function cancelOrder($orderId) {
         $this->_orderManagement->cancel($orderId);
@@ -131,7 +131,7 @@ class Data extends CoreHelper
     {
         $secret = $this->getSharedSecret();
         $signature_2 = hash_hmac('sha256', $tracker, $secret);
-        
+
         if ($signature_2 === $signature) {
             return true;
         }

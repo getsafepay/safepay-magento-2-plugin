@@ -27,7 +27,9 @@ define(
             initialize: function () {
                 this._super();
                 this.tokenRequest();
-
+                quote.totals.subscribe(function () {
+                    this.tokenRequest();
+                }.bind(this));
                 return this;
             },
 
@@ -89,7 +91,7 @@ define(
             getData: function () {
                 var apiResponse = tokenApiResponse();
                 console.log(apiResponse, typeof apiResponse.data, apiResponse.data);
-                
+
                 return {
                     'method': this.item.method,
                     'po_number': null,
