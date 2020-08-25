@@ -9,11 +9,12 @@ namespace Safepay\Checkout\Model\Payment;
  */
 class Safepay extends \Magento\Payment\Model\Method\AbstractMethod
 {
+    const PAYMENT_METHOD_CODE = "safepay";
 
-    protected $_code = "safepay";
+    protected $_code = self::PAYMENT_METHOD_CODE;
     protected $_isInitializeNeeded      = true;
-	protected $_canUseInternal          = true;
-	protected $_canUseForMultishipping  = false;
+    protected $_canUseInternal          = true;
+    protected $_canUseForMultishipping  = false;
     protected $_infoBlockType = \Safepay\Checkout\Block\Info::class;
 
     public function isAvailable(
@@ -22,4 +23,3 @@ class Safepay extends \Magento\Payment\Model\Method\AbstractMethod
         return parent::isAvailable($quote);
     }
 }
-
