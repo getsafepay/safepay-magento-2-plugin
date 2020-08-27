@@ -18,13 +18,12 @@ class Info extends \Magento\Payment\Block\Info
     protected $_request;
     
     public function __construct(
-        \Magento\Framework\App\State $state,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Framework\View\Element\Template\Context $context,
         array $data = []
     )
     {
-        $this->_state = $state;
+        $this->_state = $context->getAppState();
         $this->_request = $request;
         parent::__construct($context, $data);
     }

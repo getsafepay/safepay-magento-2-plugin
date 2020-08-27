@@ -7,8 +7,6 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Framework\UrlInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Safepay\Checkout\Model\EnvVars;
 use Magento\Sales\Model\OrderFactory;
@@ -35,26 +33,22 @@ class Data extends AbstractHelper
      * @param Context $context
      * @param ObjectManagerInterface $objectManager
      * @param StoreManagerInterface $storeManager
-     * @param ScopeConfigInterface $scopeConfig
-     * @param UrlInterface $urlInterface
      */
     public function __construct(
         Context $context,
         ObjectManagerInterface $objectManager,
         StoreManagerInterface $storeManager,
-        ScopeConfigInterface $scopeConfig,
         OrderManagementInterface $orderManagement,
         OrderFactory $orderFactory,
-        UrlInterface $urlInterface,
         OrderRepositoryInterface $orderRepository,
         InvoiceService $invoiceService,
         Transaction $transaction,
         InvoiceSender $invoiceSender
     ) {
-        $this->_scopeConfig = $scopeConfig;
+        $this->_scopeConfig = $context->getScopeConfig();
         $this->_orderManagement = $orderManagement;
         $this->_orderFactory = $orderFactory;
-        $this->_urlInterface = $urlInterface;
+        $this->_urlInterface = $context->getUrlBuilder();
         $this->_orderRepository = $orderRepository;
         $this->_invoiceService = $invoiceService;
         $this->_transaction = $transaction;
