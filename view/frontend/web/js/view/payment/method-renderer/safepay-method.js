@@ -54,7 +54,7 @@ define(
                             } else {
                                 alert({
                                     title: $.mage.__('Error'),
-                                    content: $.mage.__('Something went wrong. Please try again.'),
+                                    content: $.mage.__('Something went wrong. Please try again.1'),
                                     actions: {
                                         always: function(){}
                                     }
@@ -75,7 +75,7 @@ define(
                     error: function (jqXhr, textStatus, errorMessage) {
                         alert({
                             title: $.mage.__('Error'),
-                            content: $.mage.__('Something went wrong. Please try again.'),
+                            content: $.mage.__(errorMessage+'......Something went wrong. Please try again.2'),
                             actions: {
                                 always: function(){}
                             }

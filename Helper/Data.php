@@ -59,7 +59,9 @@ class Data extends AbstractHelper
         $this->_invoiceService = $invoiceService;
         $this->_transaction = $transaction;
         $this->_invoiceSender = $invoiceSender;
-        parent::__construct($context, $objectManager, $storeManager);
+        $this->_objectManager = $objectManager;
+        $this->_storeManager = $storeManager;
+        parent::__construct($context);
     }
 
     public function getEnvironment()
@@ -132,19 +134,37 @@ class Data extends AbstractHelper
         $secret = $this->getSharedSecret();
         $signature_2 = hash_hmac('sha256', $tracker, $secret);
 
+        $writer = new \Zend\Log\Writer\Stream( BP . '/var/log/safepay.log' );
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter( $writer );
+        $logger->info( '==============signature object start==========' );
+        $logger->info( $signature );
+        $logger->info( '==============signature_2 object start==========' );
+        $logger->info( $signature_2 );
+
         if ($signature_2 === $signature) {
             return true;
         }
 
         return false;
     }
-    public function createInvoice($orderId)
+    public function createInvoice($orderId, $amount)
     {
         $order = $this->_orderRepository->get($orderId);
+        $order->setGrandTotal($amount);
+        $order->setBaseGrandTotal($amount);
+        $order->setTotalPaid($amount);
+        $order->setBaseTotalPaid($amount);
+        $order->save();
+
         if($order->canInvoice()) {
             $invoice = $this->_invoiceService->prepareInvoice($order);
+            // $invoice->setRequestedCaptureCase(\Magento\Sales\Model\Order\Invoice::CAPTURE_OFFLINE);
             $invoice->register();
             $invoice->getOrder()->setIsInProcess(true);
+            // $invoice->setState(\Magento\Sales\Model\Order\Invoice::STATE_PAID);
+            // $invoice->setBaseGrandTotal($amount);
+            // $invoice->pay();
             $invoice->save();
             $transactionSave = $this->_transaction->addObject(
                 $invoice
@@ -159,6 +179,7 @@ class Data extends AbstractHelper
             )
             ->setIsCustomerNotified(true)
             ->save();
+
         }
     }
 }

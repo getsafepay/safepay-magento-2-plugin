@@ -32,7 +32,10 @@
 					<depends>
                         <field id="*/*/sandbox">1</field>
                     </depends>
-					<comment><![CDATA[Using webhook secret keys allows Safepay to verify each payment. To get your sandbox webhook key: <br/>&nbsp;&nbsp; 1. Navigate to your Sandbox Safepay dashboard by clicking <a target="__blank" href="https://sandbox.api.getsafepay.com/dashboard/api-settings">here</a> <br/>&nbsp;&nbsp; 2. Activate your Developer settings, copy the webhook secret key and paste into the box above.]]></comment>
+					<!-- <comment><![CDATA[Using webhook secret keys allows Safepay to verify each payment. To get your sandbox webhook key: <br/>&nbsp;&nbsp; 1. Navigate to your Sandbox Safepay dashboard by clicking <a target="__blank" href="https://sandbox.api.getsafepay.com/dashboard/api-settings">here</a> <br/>&nbsp;&nbsp; 2. Activate your Developer settings, copy the webhook secret key and paste into the box above.]]></comment> -->
+                    <comment>
+                        <model>Safepay\Checkout\Model\SystemConfigComment</model>
+                    </comment>
 				</field>
 				<field id="production_key" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="70" translate="label" type="text">
 					<label>Production key</label>
@@ -45,7 +48,10 @@
 					<depends>
                         <field id="*/*/sandbox">0</field>
                     </depends>
-					<comment><![CDATA[Using webhook secret keys allows Safepay to verify each payment. To get your live webhook key: <br/>&nbsp;&nbsp; 1. Navigate to your Live Safepay dashboard by clicking <a  target="__blank" href="https://getsafepay.com/dashboard/api-settings">here</a> <br/>&nbsp;&nbsp; 2. Activate your Developer settings, copy the webhook secret key and paste into the box above.]]></comment>
+                    <comment>
+                        <model>Safepay\Checkout\Model\SystemConfigProductionComment</model>
+                    </comment>
+					<!-- <comment><![CDATA[Using webhook secret keys allows Safepay to verify each payment. To get your live webhook key: <br/>&nbsp;&nbsp; 1. Navigate to your Live Safepay dashboard by clicking <a  target="__blank" href="https://getsafepay.com/dashboard/api-settings">here</a> <br/>&nbsp;&nbsp; 2. Activate your Developer settings, copy the webhook secret key and paste into the box above.]]></comment> -->
 				</field>
 				<field id="allowspecific" showInDefault="1" showInStore="0" showInWebsite="1" sortOrder="90" translate="label" type="allowspecific">
 					<label>Payment from Applicable Countries</label>

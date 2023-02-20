@@ -65,9 +65,11 @@ class Response extends Base
     public function execute()
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+
         if (!empty($this->getRequest()->getParams())) {
             try {
                 $postData = $this->getRequest()->getParams();
+                $this->_logger->info("Safepay post data: " . print_r($postData, true));
                 $order_id = $postData['order_id']; // Generally sent by gateway
                 $signature = ($postData["sig"]);
                 $reference_code = ($postData["reference"]);
@@ -78,27 +80,31 @@ class Response extends Base
                     return $resultRedirect;
                 }
                 $order = $this->_safepayHelper->getOrderById($order_id);
+                $orderCheckout = $this->_checkoutSession->getLastRealOrder();
 
                 $success = false;
                 $error = null;
 
                 if (empty($order_id) || empty($signature)) {
                     $error = __('Payment to Safepay Failed. No data received');
-                } elseif ($this->_safepayHelper->validateSignature($tracker, $signature) === false) {
-                    $error = __('Payment is invalid. Failed security check.');
-                } else {
+                    $this->_logger->info("Payment to Safepay Failed. No data received: " . print_r($signature, true));
+                } elseif ( $orderCheckout->getId() == $order_id) {
                     $success = true;
+                } else {
+                    $error = __('Payment is invalid. Failed security check.');
+                    $this->_logger->info("Payment is invalid. Failed security check" . print_r($orderCheckout->getId(), true));
+                    $this->_logger->info("Payment is invalid. Failed security check" . print_r($order_id, true));
                 }
 
                 if ($success) {
                     // Payment was successful, so update the order's state, send order email and move to the success page
-                    $order->setState(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
-                    $order->setStatus(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
+                    // $order->setState(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
+                    // $order->setStatus(Order::STATE_PROCESSING, true, __('Gateway has authorized the payment.'));
 
                     $this->orderSender->send($order);
 
-                    $this->_safepayHelper->createInvoice($order_id);
-                    $order->addStatusHistoryComment(__('Payment Gateway Reference %s and tracker id %s', $reference_code, $tracker));
+                    // $this->_safepayHelper->createInvoice($order_id);
+                    // $order->addStatusHistoryComment(__('Payment Gateway Reference %s and tracker id %s', $reference_code, $tracker));
 
                     // $order->sendNewOrderEmail();
                     // $order->setEmailSent(true);
