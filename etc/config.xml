@@ -11,6 +11,12 @@
 				<sort_order>10</sort_order>
 				<order_status>pending_payment</order_status>
 				<group>offline</group>
+				<can_use_internal>1</can_use_internal>
+				<can_refund>1</can_refund>
+				<can_cancel>1</can_cancel>
+				<is_gateway>1</is_gateway>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
 			</safepay>
 		</payment>
 	</default>
